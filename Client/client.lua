@@ -130,12 +130,28 @@ RegisterNetEvent('iQ-Weather:selectWeather')
 AddEventHandler('iQ-Weather:selectWeather', function(weatherType)
     TriggerServerEvent('iQ-Weather:changeWeather', weatherType)
     exports.ox_lib:showContext('weather_submenu') -- Ujistěte se, že se menu znovu zobrazí
+    -- Přidání notifikace
+    exports.ox_lib:notify({
+        title = 'Počasí',
+        description = 'Počasí bylo změněno na ' .. weatherType,
+        type = 'success'
+    })
 end)
 
 RegisterNetEvent('iQ-Weather:adjustTime')
 AddEventHandler('iQ-Weather:adjustTime', function(args)
     TriggerServerEvent('iQ-Weather:changeTime', args.hours, args.minutes)
     exports.ox_lib:showContext('time_submenu') -- Ujistěte se, že se menu znovu zobrazí
+
+    -- Získejte aktuální čas po změně
+    local hours = GetClockHours()
+    local minutes = GetClockMinutes()
+    -- Přidání notifikace s novým časem
+    exports.ox_lib:notify({
+        title = 'Čas',
+        description = string.format('Čas byl změněn na %02d:%02d', hours, minutes),
+        type = 'success'
+    })
 end)
 
 -- Synchronizace počasí a času při připojení hráče
