@@ -46,7 +46,8 @@ for _, weather in ipairs(weatherTypes) do
         title = weather.title,
         event = 'iQ-Weather:selectWeather',
         args = weather.weatherType,
-        icon = weather.icon
+        icon = weather.icon,
+        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
     })
 end
 
@@ -67,25 +68,29 @@ local timeOptions = {
         title = 'Posunout čas o hodinu dopředu',
         event = 'iQ-Weather:adjustTime',
         args = {hours = 1, minutes = 0},
-        icon = 'clock'
+        icon = 'clock',
+        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
     },
     {
         title = 'Posunout čas o hodinu zpět',
         event = 'iQ-Weather:adjustTime',
         args = {hours = -1, minutes = 0},
-        icon = 'clock'
+        icon = 'clock',
+        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
     },
     {
         title = 'Posunout čas o minutu dopředu',
         event = 'iQ-Weather:adjustTime',
         args = {hours = 0, minutes = 1},
-        icon = 'clock'
+        icon = 'clock',
+        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
     },
     {
         title = 'Posunout čas o minutu zpět',
         event = 'iQ-Weather:adjustTime',
         args = {hours = 0, minutes = -1},
-        icon = 'clock'
+        icon = 'clock',
+        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
     }
 }
 
@@ -124,11 +129,13 @@ end)
 RegisterNetEvent('iQ-Weather:selectWeather')
 AddEventHandler('iQ-Weather:selectWeather', function(weatherType)
     TriggerServerEvent('iQ-Weather:changeWeather', weatherType)
+    exports.ox_lib:showContext('weather_submenu') -- Ujistěte se, že se menu znovu zobrazí
 end)
 
 RegisterNetEvent('iQ-Weather:adjustTime')
 AddEventHandler('iQ-Weather:adjustTime', function(args)
     TriggerServerEvent('iQ-Weather:changeTime', args.hours, args.minutes)
+    exports.ox_lib:showContext('time_submenu') -- Ujistěte se, že se menu znovu zobrazí
 end)
 
 -- Synchronizace počasí a času při připojení hráče
