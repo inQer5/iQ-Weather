@@ -18,6 +18,7 @@
 > [!TIP]
 > <b>Roadmap:</b>
 > - [x] Synchronization
+> - [X] Periodic Weather Changes 
 > - [X] Saving Time and Weather
 > - [X] Config 
 > - [X] ACE Permissions
