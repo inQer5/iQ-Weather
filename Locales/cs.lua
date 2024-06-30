@@ -7,7 +7,7 @@ Locales = {
     ['time_changed'] = 'Čas byl změněn na %02d:%02d',
     ['weather'] = 'Počasí',
     ['time'] = 'Čas',
-	['move_time_forward_hour'] = 'Posunout čas o hodinu dopředu',
+    ['move_time_forward_hour'] = 'Posunout čas o hodinu dopředu',
     ['move_time_backward_hour'] = 'Posunout čas o hodinu zpět',
     ['move_time_forward_minute'] = 'Posunout čas o minutu dopředu',
     ['move_time_backward_minute'] = 'Posunout čas o minutu zpět',
@@ -24,6 +24,6 @@ Locales = {
     ['snowlight'] = 'Lehké sněžení',
     ['blizzard'] = 'Vánice',
     ['snow'] = 'Sníh',
-	['access_denied'] = 'Přístup odepřen',
+    ['access_denied'] = 'Přístup odepřen',
     ['no_permission'] = 'Nemáte oprávnění použít tento příkaz.'
 }
