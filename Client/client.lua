@@ -25,7 +25,23 @@ end
 -- Načíst lokalizaci při startu
 loadLocale(Config.Locale)
 
-RegisterCommand('weather', function()
+-- Přidání event listeneru na klientovi pro zobrazení notifikace
+RegisterNetEvent('iQ-Weather:showNotification')
+AddEventHandler('iQ-Weather:showNotification', function(data)
+    local title = _U(data.title)
+    local description = _U(data.description)
+
+    exports.ox_lib:notify({
+        title = title,
+        description = description,
+        type = data.type
+    })
+end)
+
+
+
+RegisterNetEvent('iQ-Weather:openWeatherMenu')
+AddEventHandler('iQ-Weather:openWeatherMenu', function()
     -- Registrace hlavního menu
     exports.ox_lib:registerContext({
         id = 'weather_menu',
@@ -45,9 +61,10 @@ RegisterCommand('weather', function()
             }
         }
     })
-    -- Zobrazení hlavního menu
+
     exports.ox_lib:showContext('weather_menu')
-end, false)
+end)
+
 
 local weatherTypes = {
     {title = _U('clear'), weatherType = 'CLEAR', icon = 'sun'},
@@ -90,28 +107,28 @@ exports.ox_lib:registerContext({
 
 local timeOptions = {
     {
-        title = 'Posunout čas o hodinu dopředu',
+        title = _U('move_time_forward_hour'),
         event = 'iQ-Weather:adjustTime',
         args = {hours = 1, minutes = 0},
         icon = 'clock',
         keepMenuOpen = true
     },
     {
-        title = 'Posunout čas o hodinu zpět',
+        title = _U('move_time_backward_hour'),
         event = 'iQ-Weather:adjustTime',
         args = {hours = -1, minutes = 0},
         icon = 'clock',
         keepMenuOpen = true
     },
     {
-        title = 'Posunout čas o minutu dopředu',
+        title = _U('move_time_forward_minute'),
         event = 'iQ-Weather:adjustTime',
         args = {hours = 0, minutes = 1},
         icon = 'clock',
         keepMenuOpen = true
     },
     {
-        title = 'Posunout čas o minutu zpět',
+        title = _U('move_time_backward_minute'),
         event = 'iQ-Weather:adjustTime',
         args = {hours = 0, minutes = -1},
         icon = 'clock',
