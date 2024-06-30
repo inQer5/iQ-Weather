@@ -1,20 +1,47 @@
-local ESX = exports["es_extended"]:getSharedObject()
+local ESX = exports['es_extended']:getSharedObject()
+local Config = Config or {}
+
+-- Načítání lokalizace
+local function loadLocale(locale)
+    local localeFile = ('Locales/%s.lua'):format(locale)
+    if not LoadResourceFile(GetCurrentResourceName(), localeFile) then
+        print(('Locale file for "%s" does not exist. Falling back to default "en".'):format(locale))
+        locale = 'en'
+        localeFile = 'Locales/en.lua'
+    end
+    local locales = LoadResourceFile(GetCurrentResourceName(), localeFile)
+    assert(load(locales))()
+end
+
+-- Funkce pro načtení lokalizačních textů
+local function _U(entry, ...)
+    if Locales[entry] then
+        return string.format(Locales[entry], ...)
+    else
+        return entry
+    end
+end
+
+-- Načíst lokalizaci při startu
+loadLocale(Config.Locale)
 
 RegisterCommand('weather', function()
     -- Registrace hlavního menu
     exports.ox_lib:registerContext({
         id = 'weather_menu',
-        title = 'Menu Počasí a Čas',
+        title = _U('weather_menu_title'),
         options = {
             {
-                title = 'Počasí',
+                title = _U('weather_option'),
                 menu = 'weather_submenu',
-                arrow = true
+                arrow = true,
+                icon = 'fa-sun'
             },
             {
-                title = 'Čas',
+                title = _U('time_option'),
                 menu = 'time_submenu',
-                arrow = true
+                arrow = true,
+                icon = 'fa-clock'
             }
         }
     })
@@ -22,24 +49,23 @@ RegisterCommand('weather', function()
     exports.ox_lib:showContext('weather_menu')
 end, false)
 
--- Seznam typů počasí s ikonami
 local weatherTypes = {
-    {title = 'Clear', weatherType = 'CLEAR', icon = 'sun'},
-    {title = 'Extrasunny', weatherType = 'EXTRASUNNY', icon = 'sun'},
-    {title = 'Clouds', weatherType = 'CLOUDS', icon = 'cloud'},
-    {title = 'Overcast', weatherType = 'OVERCAST', icon = 'cloud'},
-    {title = 'Rain', weatherType = 'RAIN', icon = 'cloud-rain'},
-    {title = 'Clearing', weatherType = 'CLEARING', icon = 'cloud-sun'},
-    {title = 'Thunder', weatherType = 'THUNDER', icon = 'bolt'},
-    {title = 'Smog', weatherType = 'SMOG', icon = 'smog'},
-    {title = 'Foggy', weatherType = 'FOGGY', icon = 'smog'},
-    {title = 'XMAS', weatherType = 'XMAS', icon = 'snowflake'},
-    {title = 'Snowlight', weatherType = 'SNOWLIGHT', icon = 'snowflake'},
-    {title = 'Blizzard', weatherType = 'BLIZZARD', icon = 'snowflake'},
-    {title = 'Snow', weatherType = 'SNOW', icon = 'snowflake'}
+    {title = _U('clear'), weatherType = 'CLEAR', icon = 'sun'},
+    {title = _U('extrasunny'), weatherType = 'EXTRASUNNY', icon = 'sun'},
+    {title = _U('clouds'), weatherType = 'CLOUDS', icon = 'cloud'},
+    {title = _U('overcast'), weatherType = 'OVERCAST', icon = 'cloud'},
+    {title = _U('rain'), weatherType = 'RAIN', icon = 'cloud-rain'},
+    {title = _U('clearing'), weatherType = 'CLEARING', icon = 'cloud-sun'},
+    {title = _U('thunder'), weatherType = 'THUNDER', icon = 'bolt'},
+    {title = _U('smog'), weatherType = 'SMOG', icon = 'smog'},
+    {title = _U('foggy'), weatherType = 'FOGGY', icon = 'smog'},
+    {title = _U('xmas'), weatherType = 'XMAS', icon = 'snowflake'},
+    {title = _U('snowlight'), weatherType = 'SNOWLIGHT', icon = 'snowflake'},
+    {title = _U('blizzard'), weatherType = 'BLIZZARD', icon = 'snowflake'},
+    {title = _U('snow'), weatherType = 'SNOW', icon = 'snowflake'}
 }
 
--- Vytvoření seznamu možností pro submenu počasí
+
 local weatherOptions = {}
 for _, weather in ipairs(weatherTypes) do
     table.insert(weatherOptions, {
@@ -47,14 +73,14 @@ for _, weather in ipairs(weatherTypes) do
         event = 'iQ-Weather:selectWeather',
         args = weather.weatherType,
         icon = weather.icon,
-        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
+        keepMenuOpen = true
     })
 end
 
 -- Registrace submenu pro počasí
 exports.ox_lib:registerContext({
     id = 'weather_submenu',
-    title = 'Počasí',
+    title = _U('weather'),
     menu = 'weather_menu',
     onBack = function()
         exports.ox_lib:showContext('weather_menu')
@@ -62,42 +88,41 @@ exports.ox_lib:registerContext({
     options = weatherOptions
 })
 
--- Seznam možností pro submenu času
 local timeOptions = {
     {
         title = 'Posunout čas o hodinu dopředu',
         event = 'iQ-Weather:adjustTime',
         args = {hours = 1, minutes = 0},
         icon = 'clock',
-        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
+        keepMenuOpen = true
     },
     {
         title = 'Posunout čas o hodinu zpět',
         event = 'iQ-Weather:adjustTime',
         args = {hours = -1, minutes = 0},
         icon = 'clock',
-        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
+        keepMenuOpen = true
     },
     {
         title = 'Posunout čas o minutu dopředu',
         event = 'iQ-Weather:adjustTime',
         args = {hours = 0, minutes = 1},
         icon = 'clock',
-        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
+        keepMenuOpen = true
     },
     {
         title = 'Posunout čas o minutu zpět',
         event = 'iQ-Weather:adjustTime',
         args = {hours = 0, minutes = -1},
         icon = 'clock',
-        keepMenuOpen = true -- Přidání tohoto atributu pro ponechání menu otevřeného
+        keepMenuOpen = true
     }
 }
 
 -- Registrace submenu pro čas
 exports.ox_lib:registerContext({
     id = 'time_submenu',
-    title = 'Čas',
+    title = _U('time'),
     menu = 'weather_menu',
     onBack = function()
         exports.ox_lib:showContext('weather_menu')
@@ -109,7 +134,7 @@ RegisterNetEvent('iQ-Weather:showTime')
 AddEventHandler('iQ-Weather:showTime', function()
     local hours = GetClockHours()
     local minutes = GetClockMinutes()
-    local timeString = string.format("Aktuální čas: %02d:%02d", hours, minutes)
+    local timeString = _U('current_time', hours, minutes)
     ESX.ShowNotification(timeString)
 end)
 
@@ -129,11 +154,10 @@ end)
 RegisterNetEvent('iQ-Weather:selectWeather')
 AddEventHandler('iQ-Weather:selectWeather', function(weatherType)
     TriggerServerEvent('iQ-Weather:changeWeather', weatherType)
-    exports.ox_lib:showContext('weather_submenu') -- Ujistěte se, že se menu znovu zobrazí
-    -- Přidání notifikace
+    exports.ox_lib:showContext('weather_submenu')
     exports.ox_lib:notify({
-        title = 'Počasí',
-        description = 'Počasí bylo změněno na ' .. weatherType,
+        title = _U('weather'),
+        description = _U('weather_changed', weatherType),
         type = 'success'
     })
 end)
@@ -141,20 +165,17 @@ end)
 RegisterNetEvent('iQ-Weather:adjustTime')
 AddEventHandler('iQ-Weather:adjustTime', function(args)
     TriggerServerEvent('iQ-Weather:changeTime', args.hours, args.minutes)
-    exports.ox_lib:showContext('time_submenu') -- Ujistěte se, že se menu znovu zobrazí
+    exports.ox_lib:showContext('time_submenu')
 
-    -- Získejte aktuální čas po změně
     local hours = GetClockHours()
     local minutes = GetClockMinutes()
-    -- Přidání notifikace s novým časem
     exports.ox_lib:notify({
-        title = 'Čas',
-        description = string.format('Čas byl změněn na %02d:%02d', hours, minutes),
+        title = _U('time'),
+        description = _U('time_changed', hours, minutes),
         type = 'success'
     })
 end)
 
--- Synchronizace počasí a času při připojení hráče
 RegisterNetEvent('iQ-Weather:syncWeatherAndTime')
 AddEventHandler('iQ-Weather:syncWeatherAndTime', function(weatherType, hours, minutes)
     SetWeatherTypeNowPersist(weatherType)
@@ -164,7 +185,6 @@ AddEventHandler('iQ-Weather:syncWeatherAndTime', function(weatherType, hours, mi
     NetworkOverrideClockTime(hours, minutes, 0)
 end)
 
--- Po připojení hráče požádá server o aktuální počasí a čas
 AddEventHandler('playerSpawned', function()
     TriggerServerEvent('iQ-Weather:requestSync')
 end)
