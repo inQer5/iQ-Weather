@@ -38,8 +38,6 @@ AddEventHandler('iQ-Weather:showNotification', function(data)
     })
 end)
 
-
-
 RegisterNetEvent('iQ-Weather:openWeatherMenu')
 AddEventHandler('iQ-Weather:openWeatherMenu', function()
     -- Registrace hlavního menu
@@ -147,6 +145,17 @@ exports.ox_lib:registerContext({
     options = timeOptions
 })
 
+RegisterNetEvent('iQ-Weather:timeUpdated')
+AddEventHandler('iQ-Weather:timeUpdated', function(hours, minutes)
+    -- Zobrazení notifikace s novým časem
+    exports.ox_lib:notify({
+        title = _U('time'),
+        description = _U('time_changed', hours, minutes),
+        type = 'success'
+    })
+end)
+
+
 RegisterNetEvent('iQ-Weather:showTime')
 AddEventHandler('iQ-Weather:showTime', function()
     local hours = GetClockHours()
@@ -186,11 +195,6 @@ AddEventHandler('iQ-Weather:adjustTime', function(args)
 
     local hours = GetClockHours()
     local minutes = GetClockMinutes()
-    exports.ox_lib:notify({
-        title = _U('time'),
-        description = _U('time_changed', hours, minutes),
-        type = 'success'
-    })
 end)
 
 RegisterNetEvent('iQ-Weather:syncWeatherAndTime')
