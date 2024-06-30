@@ -7,7 +7,7 @@ Locales = {
     ['time_changed'] = 'Time changed to %02d:%02d',
     ['weather'] = 'Weather',
     ['time'] = 'Time',
-	['move_time_forward_hour'] = 'Move Time Forward One Hour',
+    ['move_time_forward_hour'] = 'Move Time Forward One Hour',
     ['move_time_backward_hour'] = 'Move Time Backward One Hour',
     ['move_time_forward_minute'] = 'Move Time Forward One Minute',
     ['move_time_backward_minute'] = 'Move Time Backward One Minute',
@@ -24,6 +24,6 @@ Locales = {
     ['snowlight'] = 'Light Snow',
     ['blizzard'] = 'Blizzard',
     ['snow'] = 'Snow',
-	['access_denied'] = 'Access Denied',
+    ['access_denied'] = 'Access Denied',
     ['no_permission'] = 'You do not have permission to use this command.'
 }
