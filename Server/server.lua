@@ -4,32 +4,10 @@ local currentWeather = 'CLEAR'
 local gameTime = {hours = 12, minutes = 0}
 local weatherFilePath = 'weather_time.json'
 local gameMinuteDuration = 2000
+local weatherChangeInterval = Config.WeatherChangeInterval or 3600000
 
 -- Aktuální verze skriptu
-local currentVersion = '0.0.2'
-
-local function getLatestRelease()
-    PerformHttpRequest('https://api.github.com/repos/inQer5/iQ-Weather/releases/latest', function(statusCode, response, headers)
-        if statusCode == 200 then
-            local releaseInfo = json.decode(response)
-            local latestVersion = releaseInfo.tag_name:match("^%s*(.-)%s*$")  -- Trim whitespace
-            if currentVersion == latestVersion then
-                print("\27[32mYou are using the latest version!\27[0m")
-            else
-                print("\27[31mYour version is outdated. Please download the latest version.\27[0m")
-            end
-            TriggerClientEvent('carwash:checkVersion', -1, currentVersion, latestVersion)
-        else
-            print("Failed to fetch release info. Status code: " .. statusCode)
-        end
-    end, 'GET', '', {['User-Agent'] = 'lua-script'})
-end
-
-AddEventHandler('onResourceStart', function(resourceName)
-    if GetCurrentResourceName() == resourceName then
-        getLatestRelease()
-    end
-end)
+local currentVersion = '0.0.3'
 
 local function loadWeatherAndTime()
     local file = LoadResourceFile(GetCurrentResourceName(), weatherFilePath)
@@ -55,6 +33,31 @@ local function saveWeatherAndTime()
     SaveResourceFile(GetCurrentResourceName(), weatherFilePath, data, -1)
 end
 
+local function getLatestRelease()
+    PerformHttpRequest('https://api.github.com/repos/inQer5/iQ-Weather/releases/latest', function(statusCode, response, headers)
+        if statusCode == 200 then
+            local releaseInfo = json.decode(response)
+            local latestVersion = releaseInfo.tag_name:match("^%s*(.-)%s*$")  -- Trim whitespace
+            if currentVersion == latestVersion then
+                print("\27[32mYou are using the latest version!\27[0m")
+            else
+                print("\27[31mYour version is outdated. Please download the latest version.\27[0m")
+            end
+            TriggerClientEvent('carwash:checkVersion', -1, currentVersion, latestVersion)
+        else
+            print("Failed to fetch release info. Status code: " .. statusCode)
+        end
+    end, 'GET', '', {['User-Agent'] = 'lua-script'})
+end
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if GetCurrentResourceName() == resourceName then
+        getLatestRelease()
+        loadWeatherAndTime()
+        print(string.format("\27[34mAktuální čas: %02d:%02d, Aktuální počasí: %s\27[0m", gameTime.hours, gameTime.minutes, currentWeather))
+    end
+end)
+
 loadWeatherAndTime()
 
 RegisterCommand('weather', function(source)
@@ -72,8 +75,7 @@ RegisterCommand('weather', function(source)
             })
         end
     end
-end, true) -- 'true' nastavuje příkaz jako omezený pro administrátory
-
+end, true)
 
 RegisterNetEvent('iQ-Weather:changeWeather')
 AddEventHandler('iQ-Weather:changeWeather', function(weatherType)
@@ -92,15 +94,20 @@ RegisterNetEvent('iQ-Weather:changeTime')
 AddEventHandler('iQ-Weather:changeTime', function(hours, minutes)
     gameTime.hours = (gameTime.hours + hours) % 24
     gameTime.minutes = (gameTime.minutes + minutes) % 60
+
     if gameTime.minutes < 0 then
         gameTime.minutes = gameTime.minutes + 60
         gameTime.hours = gameTime.hours - 1
     end
+
     if gameTime.hours < 0 then
         gameTime.hours = gameTime.hours + 24
     end
+
     saveWeatherAndTime()
-    TriggerClientEvent('iQ-Weather:updateTime', -1, gameTime.hours, gameTime.minutes)
+
+    -- Odeslat aktualizovaný čas zpět na klienta
+    TriggerClientEvent('iQ-Weather:timeUpdated', source, gameTime.hours, gameTime.minutes)
 end)
 
 CreateThread(function()
@@ -113,5 +120,15 @@ CreateThread(function()
         end
         saveWeatherAndTime()
         TriggerClientEvent('iQ-Weather:updateTime', -1, gameTime.hours, gameTime.minutes)
+    end
+end)
+
+CreateThread(function()
+    while true do
+        Wait(weatherChangeInterval)
+        local newWeather = Config.WeatherTypes[math.random(#Config.WeatherTypes)]
+        currentWeather = newWeather
+        saveWeatherAndTime()
+        TriggerClientEvent('iQ-Weather:updateWeather', -1, newWeather)
     end
 end)
