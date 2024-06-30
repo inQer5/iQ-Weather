@@ -9,8 +9,8 @@
 
 > [!WARNING]
 > <b>Dependencies:</b>
-> - ESX
-> - <p>OX_LIB</p>
+> - [ESX](https://github.com/esx-framework/esx_core)
+> - [OX_LIB](https://github.com/overextended/ox_lib)
 
 > [!CAUTION]
 > - Tested on ESX: 1.10.7
