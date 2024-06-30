@@ -17,10 +17,11 @@
 
 > [!TIP]
 > <b>Roadmap:</b>
+> - [X] Config
+> - [X] Localization
 > - [x] Synchronization
 > - [X] Periodic Weather Changes 
 > - [X] Saving Time and Weather
-> - [X] Config 
 > - [X] ACE Permissions
 > - [ ] Dynamic Weather
 
