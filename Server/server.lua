@@ -30,6 +30,26 @@ end
 
 loadWeatherAndTime()
 
+ESX = exports["es_extended"]:getSharedObject()
+
+RegisterCommand('weather', function(source)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    if xPlayer then
+        -- Kontrola oprávnění pomocí ACE
+        if IsPlayerAceAllowed(source, "iQ-Weather") then
+            TriggerClientEvent('iQ-Weather:openWeatherMenu', source)
+        else
+            -- Pokud hráč nemá oprávnění, poslat lokalizovanou notifikaci zpět
+            TriggerClientEvent('iQ-Weather:showNotification', source, {
+                title = 'access_denied',
+                description = 'no_permission',
+                type = 'error'
+            })
+        end
+    end
+end, true) -- 'true' nastavuje příkaz jako omezený pro administrátory
+
+
 RegisterNetEvent('iQ-Weather:changeWeather')
 AddEventHandler('iQ-Weather:changeWeather', function(weatherType)
     currentWeather = weatherType
