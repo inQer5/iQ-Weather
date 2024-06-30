@@ -5,8 +5,8 @@ author 'inQer'
 description 'iQ-Weather: A custom weather and time control script for ESX servers.'
 
 shared_scripts {
-	--'config.lua',
-	--'Locales/*.lua',
+	'config.lua',
+	'Locales/*.lua',
 	'@es_extended/imports.lua'
 }
 
