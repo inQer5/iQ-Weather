@@ -1,13 +1,28 @@
 > [!NOTE]
+> <b>How do I use it?</b>
+> - Add ACE Permission to server.cfg
+> - Open the Menu with the Command /weather
+
+> [!IMPORTANT]
+> <b>Server.cfg:</b>
+> - <p>add_ace group.admin iQ-Weather allow
+
+> [!WARNING]
+> <b>Dependencies:</b>
 > - ESX
 > - <p>OX_LIB</p>
 
-> [!IMPORTANT]
-> - <P>CONFIG.CFG</P>
-> - add_ace group.admin iQ-Weather allow
-
 > [!CAUTION]
 > - Tested on ESX: 1.10.7
+
+> [!TIP]
+> <b>Roadmap:</b>
+> - [x] Synchronization
+> - [X] Saving Time and Weather
+> - [X] Config 
+> - [X] ACE Permissions
+> - [ ] Dynamic Weather
+
 
 ## SCREENSHOTS:
 ![image](https://github.com/inQer5/iQ-Weather/assets/145898779/ba1e05f1-bb0e-4d5f-9dc2-cdffd25dca74)
