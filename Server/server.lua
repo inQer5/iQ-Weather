@@ -2,9 +2,8 @@ ESX = exports["es_extended"]:getSharedObject()
 local currentWeather = 'CLEAR'
 local gameTime = {hours = 12, minutes = 0}
 local weatherFilePath = 'weather_time.json'
-local gameMinuteDuration = 2000 -- Délka jedné herní minuty v milisekundách (2 sekundy reálného času)
+local gameMinuteDuration = 2000
 
--- Načtení počasí a času ze souboru
 local function loadWeatherAndTime()
     local file = LoadResourceFile(GetCurrentResourceName(), weatherFilePath)
     if file then
@@ -21,7 +20,6 @@ local function loadWeatherAndTime()
     end
 end
 
--- Uložení počasí a času do souboru
 local function saveWeatherAndTime()
     local data = json.encode({
         weather = currentWeather,
@@ -30,7 +28,6 @@ local function saveWeatherAndTime()
     SaveResourceFile(GetCurrentResourceName(), weatherFilePath, data, -1)
 end
 
--- Načtení počasí a času při startu serveru
 loadWeatherAndTime()
 
 RegisterNetEvent('iQ-Weather:changeWeather')
@@ -61,10 +58,9 @@ AddEventHandler('iQ-Weather:changeTime', function(hours, minutes)
     TriggerClientEvent('iQ-Weather:updateTime', -1, gameTime.hours, gameTime.minutes)
 end)
 
--- Periodická aktualizace herního času každou herní minutu
 CreateThread(function()
     while true do
-        Wait(gameMinuteDuration) -- čeká jednu herní minutu
+        Wait(gameMinuteDuration)
         gameTime.minutes = gameTime.minutes + 1
         if gameTime.minutes >= 60 then
             gameTime.minutes = 0
